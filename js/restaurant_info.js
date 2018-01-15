@@ -60,6 +60,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const image = document.getElementById("restaurant-img");
   image.className = "restaurant-img";
+  image.alt = `Exterior photo of ${restaurant.name}`;
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
 
   const cuisine = document.getElementById("restaurant-cuisine");
@@ -177,3 +178,14 @@ getParameterByName = (name, url) => {
   if (!results[2]) return "";
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/sw.js", { scope: "" })
+    .then(function(reg) {
+      console.log("Registration succeeded. Scope is " + reg.scope);
+    })
+    .catch(function(error) {
+      console.log("Registration failed with " + error);
+    });
+}
