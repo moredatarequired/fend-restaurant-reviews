@@ -10,10 +10,20 @@ window.initMap = () => {
       // Got an error!
       console.error(error);
     } else {
-      self.map = new google.maps.Map(document.getElementById("map"), {
+      self.map = new google.maps.Map(document.querySelector("map"), {
         zoom: 16,
         center: restaurant.latlng,
         scrollwheel: false
+      });
+
+      let listener = self.map.addListener("tilesloaded", () => {
+        document
+          .querySelectorAll("map a")
+          .forEach(t => t.setAttribute("tabindex", -1));
+        document
+          .querySelectorAll("map div")
+          .forEach(t => t.setAttribute("tabindex", -1));
+        google.maps.event.removeListener(listener);
       });
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
@@ -60,7 +70,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const image = document.getElementById("restaurant-img");
   image.className = "restaurant-img";
-  image.alt = `Exterior photo of ${restaurant.name}`;
+  image.alt = `Exterior photo of the restaurant "${restaurant.name}"`;
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
 
   const cuisine = document.getElementById("restaurant-cuisine");
@@ -163,6 +173,7 @@ fillBreadcrumb = (restaurant = self.restaurant) => {
   const breadcrumb = document.getElementById("breadcrumb");
   const li = document.createElement("li");
   li.innerHTML = restaurant.name;
+  li.setAttribute("aria-current", "page");
   breadcrumb.appendChild(li);
 };
 
